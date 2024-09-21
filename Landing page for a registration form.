@@ -1,0 +1,41 @@
+Ampscr will in cloud Page Order of execute is top to down ,only in emails- Ampscp Order of operation will change preheader,HTml,text body and Subject Line .
+As soon as cloud page loads ,first time No data in Webpage and form not submittes ,So this time submitted is false ,
+when you submit form with data again this if check happens and retrive data from the FORM and put in DE.
+%%[
+
+if RequestParameter("submitted") == true then
+
+  InsertData(
+        "Registrations",
+        "FirstName", RequestParameter("firstname"),
+        "LastName", RequestParameter("lastname"),
+        "Company", RequestParameter("company"),
+        "Email", RequestParameter("email")
+       )
+
+endif
+
+]%%
+
+<!DOCTYPE html>
+<html>
+   <body>
+      %%[ if RequestParameter("submitted") == true then ]%%
+         <p>Thank you for submitting your details.</p>
+      %%[ else ]%%
+      <h2>Register</h2>
+      <form action="%%=RequestParameter('PAGEURL')=%%" method="post">
+         <label>First name</label>
+         <input type="text" name="firstname">
+         <label>Last name</label>
+         <input type="text" name="lastname">
+         <label>Company</label>
+         <input type="text" name="company">
+         <label>Email</label>
+         <input type="text" name="email">
+         <input name="submitted" type="hidden" value="true" />
+         <input type="submit" value="Submit">
+      </form>
+      %%[ endif ]%%
+   </body>
+</html>
