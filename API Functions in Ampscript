@@ -43,3 +43,38 @@ Ordinal	Type	Required	Description
         Write("Field1: " + resultSet[i].Field1 + ", Field2: " + resultSet[i].Field2 + "<br>");
     }
 </script>
+
+====
+%%[
+
+var @rr, @CategoryID, @Name, @CustomerKey
+set @rr = CreateObject("RetrieveRequest")
+SetObjectProperty(@rr, "ObjectType", "DataExtension")
+AddObjectArrayItem(@rr, "Properties", "CategoryID")
+AddObjectArrayItem(@rr, "Properties", "Name")
+AddObjectArrayItem(@rr, "Properties", "CustomerKey")
+
+set @sfp = CreateObject("SimpleFilterPart")
+SetObjectProperty(@sfp, "Property", "CategoryID")
+SetObjectProperty(@sfp, "SimpleOperator", "equals")
+AddObjectArrayItem(@sfp, "Value", "13755")
+
+SetObjectProperty(@rr,"Filter", @sfp)
+
+set @rows = InvokeRetrieve(@rr, @rrStatus, @rrRequestID)
+
+output(concat("rrStatus: ", @rrStatus))
+output(concat("<br>rrRequestID: ", @rrRequestID))
+
+for @i = 1 to RowCount(@rows) do
+
+  set @row = Row(@rows, @i)
+  set @CategoryID = Field(@row, "CategoryID")
+  set @Name = Field(@row,"Name")
+  set @CustomerKey = Field(@row, "CustomerKey")
+
+  output(concat("<br>CategoryID: ", @CategoryID, ", Name: ", @Name, ", CustomerKey: ", @CustomerKey))
+
+next @i
+
+]%%
