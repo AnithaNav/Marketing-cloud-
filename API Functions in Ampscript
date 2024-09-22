@@ -1,0 +1,43 @@
+//Refer to this blog :
+https://ampscript.guide/language/
+When to use API functions?
+You might use these API functions when you need to retrieve data from DE with more advanced filter criteria than the Data Extension Lookup functions afford. 
+You can also use these functions to interact with other Marketing Cloud objects that do not have a corresponding AMPscript function (for example, AccountUser, ListSubscriber, DataFolder, QueryDefinition, ContentArea, etc.).
+AddObjectArrayItem(1,2,3)-This function adds an object to a Marketing Cloud API Object array.(add into Array what fields of that object you want to retriev from MC
+Ordinal	Type	Required	Description
+1	API Object	True	The API Object that contains the array
+2	String	True	The array property associated with the item to be added
+3	String	True	The item to add to the array
+
+<script runat="server">
+    Platform.Load("core", "1.1.5");
+
+    // Create a RetrieveRequest object
+    var rr = Platform.Function.CreateObject("RetrieveRequest");
+
+    // Specify the object to retrieve data from (DataExtensionObject)
+    Platform.Function.SetObjectProperty(rr, "ObjectType", "DataExtensionObject[YOUR_DE_EXTERNAL_KEY]");
+
+    // Define the properties (fields) you want to retrieve
+    Platform.Function.AddObjectArrayItem(rr, "Properties", "Field1"); // Replace with your field name-means put API object into array with fields you want to retrieve -field1 &2 from the object ,so put this fields to  array. 
+    Platform.Function.AddObjectArrayItem(rr, "Properties", "Field2"); // Replace with your field name
+
+    // Create a SimpleFilterPart to filter data from the Data Extension
+    var sfp = Platform.Function.CreateObject("SimpleFilterPart");
+
+    // Set up the filter with the field to filter on, the operator, and the value
+    Platform.Function.SetObjectProperty(sfp, "Property", "Field1"); // Replace with the field to filter on
+    Platform.Function.SetObjectProperty(sfp, "SimpleOperator", "equals"); // Filter condition (equals, greaterThan, etc.)
+    Platform.Function.AddObjectArrayItem(sfp, "Value", "SomeValue"); // Replace with the value to filter for
+
+    // Attach the filter to the RetrieveRequest
+    Platform.Function.SetObjectProperty(rr, "Filter", sfp);
+
+    // Perform the retrieve
+    var resultSet = Platform.Function.InvokeRetrieve(rr);
+
+    // Log and display the results
+    for (var i = 0; i < resultSet.length; i++) {
+        Write("Field1: " + resultSet[i].Field1 + ", Field2: " + resultSet[i].Field2 + "<br>");
+    }
+</script>
