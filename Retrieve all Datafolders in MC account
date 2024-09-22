@@ -1,0 +1,25 @@
+//The following example retrieves all of the DataFolder objects in a Marketing Cloud account. The AddObjectArrayItem() lines are used to add the object attributes to retrieve in the request (ID and Name).
+%%[
+
+var @rr, @ID, @Name
+set @rr = CreateObject("RetrieveRequest")
+SetObjectProperty(@rr, "ObjectType", "DataFolder")// Define RR API Obj System property with value is given 
+AddObjectArrayItem(@rr, "Properties", "ID")//here object type is Datafolder ,so datafolder name and ID shld retrived from MC ,so store this attributes(fields) of Datafolder in array  
+AddObjectArrayItem(@rr, "Properties", "Name")//No Simple filterpart is required as all datafolders is retrieved
+
+set @dataFolders = InvokeRetrieve(@rr, @rrStatus, @rrRequestID)
+
+output(concat("rrStatus: ", @rrStatus))
+output(concat("<br>rrRequestID: ", @rrRequestID))
+
+for @i = 1 to RowCount(@dataFolders) do
+
+  set @dataFolder = Row(@dataFolders, @i)
+  set @ID = Field(@dataFolder, "ID")
+  set @Name = Field(@dataFolder, "Name")
+
+  output(concat("<br>ID: ", @ID, ", Name: ", @Name))
+
+next @i
+
+]%%
