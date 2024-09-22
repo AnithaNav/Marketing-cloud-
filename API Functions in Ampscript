@@ -8,7 +8,9 @@ Ordinal	Type	Required	Description
 1	API Object	True	The API Object that contains the array
 2	String	True	The array property associated with the item to be added
 3	String	True	The item to add to the array
-
+-create a API object with properties 1 or many as given in document(System property -give proeprty & value for it ) .
+-Add that API object to array (here object is retrieveRequest and its Objecttype is DE ,property value is dataextension),Inside the DE which fields to rerieve is stored in Array.
+====
 <script runat="server">
     Platform.Load("core", "1.1.5");
 
@@ -30,7 +32,7 @@ Ordinal	Type	Required	Description
     Platform.Function.SetObjectProperty(sfp, "SimpleOperator", "equals"); // Filter condition (equals, greaterThan, etc.)
     Platform.Function.AddObjectArrayItem(sfp, "Value", "SomeValue"); // Replace with the value to filter for
 
-    // Attach the filter to the RetrieveRequest
+    // Attach the filter to the RetrieveRequest--what is required for retrive -DEname(inrr) ,fields and value(in sfp)
     Platform.Function.SetObjectProperty(rr, "Filter", sfp);
 
     // Perform the retrieve
