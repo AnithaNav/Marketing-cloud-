@@ -51,7 +51,8 @@ Ordinal	Type	Required	Description
 var @rr, @CategoryID, @Name, @CustomerKey
 set @rr = CreateObject("RetrieveRequest")
 SetObjectProperty(@rr, "ObjectType", "DataExtension")
-AddObjectArrayItem(@rr, "Properties", "CategoryID")//give the fields names of DE you wish to retrieve
+//Fields from DE put in Object Array -The AddObjectArrayItem() lines are used to add the object attributes to retrieve in the request (ID and Name)
+AddObjectArrayItem(@rr, "Properties", "CategoryID")//give the fields names of DE you wish to retrieve put into array along with object 
 AddObjectArrayItem(@rr, "Properties", "Name")
 AddObjectArrayItem(@rr, "Properties", "CustomerKey")
 
