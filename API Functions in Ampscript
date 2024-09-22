@@ -3,7 +3,8 @@ https://ampscript.guide/language/
 When to use API functions?
 You might use these API functions when you need to retrieve data from DE with more advanced filter criteria than the Data Extension Lookup functions afford. 
 You can also use these functions to interact with other Marketing Cloud objects that do not have a corresponding AMPscript function (for example, AccountUser, ListSubscriber, DataFolder, QueryDefinition, ContentArea, etc.).
-AddObjectArrayItem(1,2,3)-This function adds an object to a Marketing Cloud API Object array.(add into Array what fields of that object you want to retriev from MC
+AddObjectArrayItem(1,2,3)-The AddObjectArrayItem() lines are used to add the object attributes to retrieve in the request (ID and Name).
+This function adds an object to a Marketing Cloud API Object array.(add into Array what fields of that object you want to retriev from MC
 Ordinal	Type	Required	Description
 1	API Object	True	The API Object that contains the array
 2	String	True	The array property associated with the item to be added
@@ -50,11 +51,11 @@ Ordinal	Type	Required	Description
 var @rr, @CategoryID, @Name, @CustomerKey
 set @rr = CreateObject("RetrieveRequest")
 SetObjectProperty(@rr, "ObjectType", "DataExtension")
-AddObjectArrayItem(@rr, "Properties", "CategoryID")
+AddObjectArrayItem(@rr, "Properties", "CategoryID")//give the fields names of DE you wish to retrieve
 AddObjectArrayItem(@rr, "Properties", "Name")
 AddObjectArrayItem(@rr, "Properties", "CustomerKey")
 
-set @sfp = CreateObject("SimpleFilterPart")
+set @sfp = CreateObject("SimpleFilterPart")//create a filter Object,say name =Anitha : object is SFP and property is name Field ,operator is = ,value is Anitha 
 SetObjectProperty(@sfp, "Property", "CategoryID")
 SetObjectProperty(@sfp, "SimpleOperator", "equals")
 AddObjectArrayItem(@sfp, "Value", "13755")
