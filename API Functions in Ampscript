@@ -2,9 +2,11 @@
 https://ampscript.guide/language/
 When to use API functions?
 -You might use these API functions when you need to retrieve data from DE with more advanced filter criteria than the Data Extension Lookup functions afford. 
--You can also use these functions to interact with other Marketing Cloud objects that do not have a corresponding AMPscript function (for example, AccountUser, ListSubscriber, DataFolder, QueryDefinition, ContentArea, etc.).
+-You can also use these functions to interact with other Marketing Cloud objects that do not have a corresponding AMPscript function 
+(for example, AccountUser, ListSubscriber, DataFolder, QueryDefinition, ContentArea, etc.).For now we can retrieve direct from Dataextension usin Retrieve(),so we can use this function for other MC Object
 -AddObjectArrayItem(1,2,3)-This function adds an object to a Marketing Cloud API Object array.(add API object you created in ur code into Array alon with 1 field of that API object-so you retrieve that column/field 
-from MC
+from MC. if array item is Dataextension ,then item in it firstname ,EmaiAddress,Age ,Gender -All fields ,
+-When you Invokeretrieve(),it take the obj property from this Array 
 -The AddObjectArrayItem() lines are used to add the object attributes to retrieve in the request (2 fields addes here-ID and Name).
 Ordinal	Type	Required	Description
 1	API Object	True	The API Object that contains the array
