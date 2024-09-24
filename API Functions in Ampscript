@@ -1,0 +1,85 @@
+//Refer to this blog :
+https://ampscript.guide/language/
+When to use API functions?
+-You might use these API functions when you need to retrieve data from DE with more advanced filter criteria than the Data Extension Lookup functions afford. 
+-You can also use these functions to interact with other Marketing Cloud objects that do not have a corresponding AMPscript function 
+(for example, AccountUser, ListSubscriber, DataFolder, QueryDefinition, ContentArea, etc.).For now we can retrieve direct from Dataextension usin Retrieve(),so we can use this function for other MC Object
+-AddObjectArrayItem(1,2,3)-This function adds an object to a Marketing Cloud API Object array.(add API object you created in ur code into Array alon with 1 field of that API object-so you retrieve that column/field 
+from MC. if array item is Dataextension ,then item in it firstname ,EmaiAddress,Age ,Gender -All fields ,
+-When you Invokeretrieve(),it take the obj property from this Array 
+-The AddObjectArrayItem() lines are used to add the object attributes to retrieve in the request (2 fields addes here-ID and Name).
+Ordinal	Type	Required	Description
+1	API Object	True	The API Object that contains the array
+2	String	True	The array property associated with the item to be added--(System proeprty name of APIObject-refer docuemtn and take it ex:"properties" ) give the arrayproperty that is associated with Object you store in array ,ex for DE Object ,fields of DE is given as array property
+3	String	True	The item to add to the array- this is actual fieldname(not data) (fieldname is actual item to be added to Array ) -you get data as o.p from MC 
+-create a API object with properties 1 or many ,properties for the Object is given in document,you cannot give your own property name ,all predefined (System property -give proeprty & value for it ) .
+-Add that API object to array (here object is retrieveRequest and its Objecttype is DE ,property value is dataextension),Inside the DE which fields to rerieve is stored in Array.
+====
+<script runat="server">
+    Platform.Load("core", "1.1.5");
+
+    // Create a RetrieveRequest object
+    var rr = Platform.Function.CreateObject("RetrieveRequest");
+
+    // Specify the object to retrieve data from (DataExtensionObject)
+    Platform.Function.SetObjectProperty(rr, "ObjectType", "DataExtensionObject[YOUR_DE_EXTERNAL_KEY]");
+
+    // Define the properties (fields) you want to retrieve
+    Platform.Function.AddObjectArrayItem(rr, "Properties", "Field1"); // Replace with your field name-means put API object into array with fields you want to retrieve -field1 &2 from the object ,so put this fields to  array. 
+    Platform.Function.AddObjectArrayItem(rr, "Properties", "Field2"); // Replace with your field name
+
+    // Create a SimpleFilterPart to filter data from the Data Extension
+    var sfp = Platform.Function.CreateObject("SimpleFilterPart");
+
+    // Set up the filter object with the one field to filter on, the operator, and the value
+    Platform.Function.SetObjectProperty(sfp, "Property", "Field1"); // Replace with the field to filter on
+    Platform.Function.SetObjectProperty(sfp, "SimpleOperator", "equals"); // Filter condition (equals, greaterThan, etc.)
+    Platform.Function.AddObjectArrayItem(sfp, "Value", "SomeValue"); // Replace with the value to filter for
+
+    // Attach the filter to the RetrieveRequest--what is required for retrive -DEname(in rr) ,fields and value(in sfp)
+    Platform.Function.SetObjectProperty(rr, "Filter", sfp);
+
+    // Perform the retrieve
+    var resultSet = Platform.Function.InvokeRetrieve(rr);
+
+    // Log and display the results
+    for (var i = 0; i < resultSet.length; i++) {
+        Write("Field1: " + resultSet[i].Field1 + ", Field2: " + resultSet[i].Field2 + "<br>");
+    }
+</script>
+
+====
+%%[
+
+var @rr, @CategoryID, @Name, @CustomerKey
+set @rr = CreateObject("RetrieveRequest")
+SetObjectProperty(@rr, "ObjectType", "DataExtension")
+//Fields from DE put in Object Array -The AddObjectArrayItem() lines are used to add the object attributes to retrieve in the request (ID and Name)
+AddObjectArrayItem(@rr, "Properties", "CategoryID")//give the fields names of DE you wish to retrieve put into array along with object 
+AddObjectArrayItem(@rr, "Properties", "Name")
+AddObjectArrayItem(@rr, "Properties", "CustomerKey")
+
+set @sfp = CreateObject("SimpleFilterPart")//create a filter Object,say name =Anitha : object is SFP and property is name Field ,operator is = ,value is Anitha 
+SetObjectProperty(@sfp, "Property", "CategoryID")
+SetObjectProperty(@sfp, "SimpleOperator", "equals")
+AddObjectArrayItem(@sfp, "Value", "13755")
+
+SetObjectProperty(@rr,"Filter", @sfp)
+
+set @rows = InvokeRetrieve(@rr, @rrStatus, @rrRequestID)
+
+output(concat("rrStatus: ", @rrStatus))
+output(concat("<br>rrRequestID: ", @rrRequestID))
+
+for @i = 1 to RowCount(@rows) do
+
+  set @row = Row(@rows, @i)
+  set @CategoryID = Field(@row, "CategoryID")
+  set @Name = Field(@row,"Name")
+  set @CustomerKey = Field(@row, "CustomerKey")
+
+  output(concat("<br>CategoryID: ", @CategoryID, ", Name: ", @Name, ", CustomerKey: ", @CustomerKey))
+
+next @i
+
+]%%
